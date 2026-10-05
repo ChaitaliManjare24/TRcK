@@ -11,7 +11,8 @@ Users can interact with the assistant through **text messages or photos**, makin
 ## Workflow Architecture
 
 Project Preview
-The workflow architecture is shown below:
+The workflow architecture is shown below: 
+![Workflow](Workflow.png)
 
 The workflow consists of specialized AI-powered agents for:
 
