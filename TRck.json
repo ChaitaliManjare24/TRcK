@@ -1,0 +1,2294 @@
+{
+  "name": "TRck",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": true
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -1360,
+        16
+      ],
+      "id": "c6f24373-3e8b-4ebb-9c5d-d97c8686fdcb",
+      "name": "Telegram Trigger",
+      "webhookId": "7f6f4f94-cebe-45b4-9cee-ce2540ca00d8",
+      "credentials": {
+        "telegramApi": {
+          "id": "TWtc2iEfkI4xG1zM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -704,
+        848
+      ],
+      "id": "b3fc3a86-abc1-4895-8d8e-5fbbbf244164",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1312,
+        -368
+      ],
+      "id": "df5c0686-d744-4d92-bee6-3767ba585566",
+      "name": "When chat message received",
+      "webhookId": "56242b9d-737d-43fa-b3ed-a7d61f392b71"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -224,
+        592
+      ],
+      "id": "27f1c049-bd36-41fa-bca5-203fab68217a",
+      "name": "Send a text message",
+      "webhookId": "5ade00fb-4114-43e2-ab52-ca85439902f1",
+      "credentials": {
+        "telegramApi": {
+          "id": "TWtc2iEfkI4xG1zM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Finance Ecosystem",
+        "height": 192,
+        "width": 592
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -560,
+        816
+      ],
+      "typeVersion": 1,
+      "id": "0932df16-8422-451e-a585-52d2de1c393a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Ask for missing information\nConfirm before saving when needed\nHandle corrections naturally\n\nimprove edition more \n\nTelegram commands / shortcuts\n\nGemini error/retry handling",
+        "height": 240,
+        "width": 320,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1264,
+        -432
+      ],
+      "typeVersion": 1,
+      "id": "e90bda82-d834-44cd-a4f7-c491d55b638f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.7-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1296,
+        256
+      ],
+      "id": "1db87059-f782-4221-8fb4-fb84307a3349",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "fcaZ9RYHrqhgYPii",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.photo }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "95c2b796-c770-4fc6-8cae-eab8ce83ae58"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Photo"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "623ba49e-06c7-4094-9036-bddd5309928b",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1184,
+        16
+      ],
+      "id": "89c27091-0f78-4e3e-89fe-0530efac0ff7",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[$json.message.photo.length - 1].file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        -144
+      ],
+      "id": "fb6f44b1-546d-41f9-a5f4-4113a6537ccc",
+      "name": "Get a file",
+      "webhookId": "17a27c03-8403-4bf6-80cc-9a2a0a41bf4d",
+      "credentials": {
+        "telegramApi": {
+          "id": "TWtc2iEfkI4xG1zM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-lite-latest",
+          "mode": "list",
+          "cachedResultName": "models/gemini-flash-lite-latest"
+        },
+        "text": "=Analyze this receipt and return ONLY valid JSON.\n\nUse exactly this structure:\n\n{\n  \"type\": \"Expense\",\n  \"amount\": 0,\n  \"currency\": \"INR\",\n  \"date\": \"YYYY-MM-DD\",\n  \"category\": \"\",\n  \"merchant\": \"\",\n  \"payment_method\": null,\n}\n\nRules:\n- amount must be the final amount actually paid.\n- Do not use subtotal, tax, discount, invoice number, or order number as the amount.\n- If the date is visible, use it. Otherwise use today's date.\n- Choose the most appropriate category and subcategory.\n- If merchant or payment method cannot be determined, use null.\n- Never guess the amount.\n- Use Asia/Kolkata timezone.\n- Return ONLY the JSON object. No explanation, markdown, or additional text.",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        -144
+      ],
+      "id": "c89274e5-8b86-46d1-8b25-41a66c3052e3",
+      "name": "Analyze an image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "fcaZ9RYHrqhgYPii",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.content || $json.text || $json.output;\n\nconst clean = $input.first().json.content.parts[0].text\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst transaction = JSON.parse(clean);\ntransaction.transaction_id =\n  `TX-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;\n\ntransaction.created_at = new Date().toISOString();\n\nreturn [\n  {\n    json: transaction\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        -144
+      ],
+      "id": "c9ee0a36-471b-4644-a754-ba628666c0c9",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Added Rs.{{ $json[' Amount '] }} — {{ $json[' Category '] }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        -144
+      ],
+      "id": "5dcfb1a4-20e6-4977-8b61-c14463f1a7e5",
+      "name": "Send a text message1",
+      "webhookId": "c9449131-236f-498e-82c2-0b27bfb4fccd",
+      "credentials": {
+        "telegramApi": {
+          "id": "TWtc2iEfkI4xG1zM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FinanceTrack",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Transaction ID ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Transaction_ID_', ``, 'string') }}",
+            " Date ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Date_', ``, 'string') }}",
+            " Type ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Type_', ``, 'string') }}",
+            " Amount ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Amount_', ``, 'string') }}",
+            " Currency ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Currency_', ``, 'string') }}",
+            " Category ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Category_', ``, 'string') }}",
+            " Merchant ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Merchant_', ``, 'string') }}",
+            " Payment Method ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Payment_Method_', ``, 'string') }}",
+            " Created At": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Created_At', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Transaction ID ",
+              "displayName": "Transaction ID ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Date ",
+              "displayName": " Date ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Type ",
+              "displayName": " Type ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Amount ",
+              "displayName": " Amount ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Currency ",
+              "displayName": " Currency ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Category ",
+              "displayName": " Category ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Merchant ",
+              "displayName": " Merchant ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Payment Method ",
+              "displayName": " Payment Method ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Created At",
+              "displayName": " Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -544,
+        848
+      ],
+      "id": "d4c6929e-1f08-40f2-81cd-fc14945c44e1",
+      "name": "Add Transaction",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FinanceTrack",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Transaction ID ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Transaction_ID___using_to_match_', ``, 'string') }}",
+            " Date ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Date_', ``, 'string') }}",
+            " Type ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Type_', ``, 'string') }}",
+            " Amount ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Amount_', `The new amount for the transaction. Only provide this when the user explicitly asks to change the amount.`, 'string') }}",
+            " Currency ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Currency_', ``, 'string') }}",
+            " Category ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Category_', ``, 'string') }}",
+            " Merchant ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Merchant_', ``, 'string') }}",
+            " Payment Method ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Payment_Method_', ``, 'string') }}",
+            " Created At": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Created_At', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "Transaction ID "
+          ],
+          "schema": [
+            {
+              "id": "Transaction ID ",
+              "displayName": "Transaction ID ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Date ",
+              "displayName": " Date ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Type ",
+              "displayName": " Type ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Amount ",
+              "displayName": " Amount ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Currency ",
+              "displayName": " Currency ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Category ",
+              "displayName": " Category ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Merchant ",
+              "displayName": " Merchant ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Payment Method ",
+              "displayName": " Payment Method ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Created At",
+              "displayName": " Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -240,
+        848
+      ],
+      "id": "295b8f61-c8af-47ea-ac7a-9b4458848eb7",
+      "name": "Edit Transaction",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FinanceTrack",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=0"
+        },
+        "startIndex": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start_Row_Number', ``, 'number') }}",
+        "numberToDelete": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Number_of_Rows_to_Delete', `The exact spreadsheet row number of the transaction that should be deleted.\n\nAlways get the transaction using the Get Rows tool first.\nUse the row number of the matching transaction returned by Get Rows.\nNever guess the row number.`, 'number') }}"
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -80,
+        848
+      ],
+      "id": "9ec14a71-d215-4b8a-92e8-e044aadaa7f1",
+      "name": "Delete Transaction",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FinanceTrack",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=0"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -384,
+        848
+      ],
+      "id": "2cdfa6d5-a186-45b4-a784-c5bbb317380f",
+      "name": "Overview/analytics",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -864,
+        848
+      ],
+      "id": "0ce34904-3de1-4a3c-86bc-2070a0abdec8",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "zPWMu7pKa1VBjZSb",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Natural transaction references\n\nYou already have editing working. We can make it more natural:\n\n\"Change the Amazon one to ₹1,200.\"\n\n\"Actually, that was yesterday.\"\n\n\"Delete the one before that.\"\n\nThis would make your memory much more useful.",
+        "height": 176,
+        "width": 320,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1264,
+        -160
+      ],
+      "typeVersion": 1,
+      "id": "2f53fd45-0278-4f75-a808-1da2e3048dc0",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "MEAL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "8f413096-4da6-4e7c-a21f-39b9523898dd"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Meal"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a24ac449-f4d4-437c-8fc8-537cdd05f467",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "RECEIPT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Receipt"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        -240
+      ],
+      "id": "df966090-2abe-4308-9a18-1f96d2496a8e",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').first().json.message.photo[$('Telegram Trigger').first().json.message.photo.length - 1].file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        -336
+      ],
+      "id": "66ab0ab4-e3a3-4575-bca5-12edc58dfaed",
+      "name": "Get a file1",
+      "webhookId": "17a27c03-8403-4bf6-80cc-9a2a0a41bf4d",
+      "credentials": {
+        "telegramApi": {
+          "id": "TWtc2iEfkI4xG1zM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.content || $json.text || $json.output;\n\nconst clean = $input.first().json.content.parts[0].text\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst meal = JSON.parse(clean);\n\nconst now = new Date();\n\nmeal.meal_id =\n  `MEAL-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;\n\nmeal.date = now.toLocaleDateString('en-CA', {\n  timeZone: 'Asia/Kolkata'\n});\n\nmeal.time = now.toLocaleTimeString('en-IN', {\n  hour: '2-digit',\n  minute: '2-digit',\n  hour12: false,\n  timeZone: 'Asia/Kolkata'\n});\n\n// Normalize foods\nif (!Array.isArray(meal.foods)) {\n  meal.foods = [];\n}\n\nmeal.foods_text = meal.foods\n  .map(food => {\n    if (typeof food === 'string') return food;\n\n    return `${food.name || 'Unknown'} (${food.portion || '1 serving'})`;\n  })\n  .join(', ');\n\nmeal.meal_type = meal.meal_type || 'Other';\nmeal.description = meal.description || null;\nmeal.confidence = meal.confidence || 'Low';\n\nmeal.source = 'Photo';\nmeal.created_at = now.toISOString();\n\nreturn [{ json: meal }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        -336
+      ],
+      "id": "fe36cf7a-e8b3-4f89-8eb3-d4215685900a",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json['Meal Type'] }} added : \n\nEstimated: {{ $json.Calories }} kcal | Protein {{ $json.Protein }}g | Carbs{{ $json.Carbs }}g | Fat {{ $json.Fat }}g | Fiber {{ $json.Fiber }}g\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        -336
+      ],
+      "id": "5ab84a88-7aba-40cf-87c3-9688df4b0e01",
+      "name": "Send a text message2",
+      "webhookId": "c9449131-236f-498e-82c2-0b27bfb4fccd",
+      "credentials": {
+        "telegramApi": {
+          "id": "TWtc2iEfkI4xG1zM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-lite-latest",
+          "mode": "list",
+          "cachedResultName": "models/gemini-flash-lite-latest"
+        },
+        "text": "=Analyze this meal photo and return ONLY valid JSON.\n\nUse exactly this structure:\n\n{\n  \"meal_type\": \"Breakfast | Lunch | Dinner | Snack | Other\",\n  \"foods\": [\n    {\n      \"name\": \"food name\",\n      \"portion\": \"estimated portion\"\n    }\n  ],\n  \"calories\": 0,\n  \"protein_g\": 0,\n  \"carbs_g\": 0,\n  \"fat_g\": 0,\n  \"fiber_g\": 0,\n  \"description\": \"\",\n  \"confidence\": \"High | Medium | Low\"\n}\n\nRules:\n\n- Identify every clearly visible food item.\n- For each food, provide an estimated portion using natural descriptions such as \"2 medium\", \"1 bowl\", \"1 cup\", \"1 serving\", etc.\n- Do not limit the number of food items.\n- Do not invent food items that are not reasonably visible.\n- Estimate total calories and nutrients for the complete meal.\n- meal_type should be Breakfast, Lunch, Dinner, Snack, or Other.\n- If the meal type cannot be determined from the image, use \"Other\".\n- If the user provides a meal type in the Telegram caption, use that instead.\n- confidence represents confidence in the overall food identification and nutrition estimate.\n- Use High, Medium, or Low only.\n- Nutrition values are estimates, not exact measurements.\n- Return ONLY the JSON object.",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        -336
+      ],
+      "id": "d47cbc9a-09e1-4108-90a7-499a18e388ef",
+      "name": "Analyze Meal",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "fcaZ9RYHrqhgYPii",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1102662663,
+          "mode": "list",
+          "cachedResultName": "Meals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=1102662663"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            " Created At": "={{ $json.created_at }}",
+            "Date": "={{ $json.date }}",
+            "Meal ID": "={{ $json.meal_id }}",
+            "Time": "={{ $json.time }}",
+            "Calories": "={{ $json.calories }}",
+            "Protein": "={{ $json.protein_g }}",
+            "Carbs": "={{ $json.carbs_g }}",
+            "Fat": "={{ $json.fat_g }}",
+            "Fiber": "={{ $json.fiber_g }}",
+            "Foods": "={{ $json.foods.map(f => f.name + ' (' + f.portion + ')').join(', ') }}",
+            "Meal Type": "={{ $json.meal_type }}",
+            "Description ": "={{ $json.description }}",
+            " Confidence ": "={{ $json.confidence }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Meal ID",
+              "displayName": "Meal ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Meal Type",
+              "displayName": "Meal Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Foods",
+              "displayName": "Foods",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Calories",
+              "displayName": "Calories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Protein",
+              "displayName": "Protein",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Carbs",
+              "displayName": "Carbs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fat",
+              "displayName": "Fat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fiber",
+              "displayName": "Fiber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Description ",
+              "displayName": "Description ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Confidence ",
+              "displayName": " Confidence ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Created At",
+              "displayName": " Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        -336
+      ],
+      "id": "2975cd13-e20e-41b3-8bd0-692926504202",
+      "name": "Meal track",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FinanceTrack",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            " Type ": "={{ $json.type }}",
+            " Amount ": "={{ $json.amount }}",
+            " Currency ": "={{ $json.currency }}",
+            " Date ": "={{ $json.date }}",
+            " Category ": "={{ $json.category }}",
+            " Merchant ": "={{ $json.merchant }}",
+            " Payment Method ": "={{ $json.payment_method }}",
+            " Created At": "={{ $json.created_at }}",
+            "Transaction ID ": "={{ $json.transaction_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Transaction ID ",
+              "displayName": "Transaction ID ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Date ",
+              "displayName": " Date ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Type ",
+              "displayName": " Type ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Amount ",
+              "displayName": " Amount ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Currency ",
+              "displayName": " Currency ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Category ",
+              "displayName": " Category ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Merchant ",
+              "displayName": " Merchant ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Payment Method ",
+              "displayName": " Payment Method ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Created At",
+              "displayName": " Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        -144
+      ],
+      "id": "740a815c-a27e-491d-bb48-b665ca3f0737",
+      "name": "Add transaction (Photo)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Meal Ecosystem",
+        "height": 208,
+        "width": 832,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        192,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "954c4ea0-fe8f-4301-bb8f-0c597a976883",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 302142918,
+          "mode": "list",
+          "cachedResultName": "Tasks",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=302142918"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Task ID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task_ID', ``, 'string') }}",
+            "Task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task', ``, 'string') }}",
+            "Due Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Date', ``, 'string') }}",
+            "Due Time": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Time', ``, 'string') }}",
+            "Priority": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}",
+            "Status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Status', ``, 'string') }}",
+            "Duration": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Duration', ``, 'string') }}",
+            "Recurrence": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Recurrence', ``, 'string') }}",
+            "Notes": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Notes', ``, 'string') }}",
+            "Created At": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Created_At', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Task ID",
+              "displayName": "Task ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Due Time",
+              "displayName": "Due Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Duration",
+              "displayName": "Duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Recurrence",
+              "displayName": "Recurrence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -352,
+        320
+      ],
+      "id": "28326352-76ac-4a60-b67a-dca7a6baf1a1",
+      "name": "Add Tasks",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 302142918,
+          "mode": "list",
+          "cachedResultName": "Tasks",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=302142918"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        320
+      ],
+      "id": "6698afd8-a17d-4e3e-85fc-577fa02c9d6f",
+      "name": "Overview - Tasks",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Tasks Ecosystem",
+        "height": 208,
+        "width": 592,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -368,
+        272
+      ],
+      "typeVersion": 1,
+      "id": "3d8d5b72-59b3-4bd5-b16c-bcaa68ab0fb8",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 302142918,
+          "mode": "list",
+          "cachedResultName": "Tasks",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=302142918"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Task ID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task_ID__using_to_match_', `The exact Task ID of the task that needs to be updated. Always use Tasks → Get Rows first to identify the correct task. Never guess the Task ID.`, 'string') }}",
+            "Task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task', ``, 'string') }}",
+            "Due Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Date', ``, 'string') }}",
+            "Due Time": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Time', ``, 'string') }}",
+            "Priority": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}",
+            "Status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Status', ``, 'string') }}",
+            "Duration": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Duration', ``, 'string') }}",
+            "Recurrence": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Recurrence', ``, 'string') }}",
+            "Notes": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Notes', ``, 'string') }}",
+            "Created At": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Created_At', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "Task ID"
+          ],
+          "schema": [
+            {
+              "id": "Task ID",
+              "displayName": "Task ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Due Time",
+              "displayName": "Due Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Duration",
+              "displayName": "Duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Recurrence",
+              "displayName": "Recurrence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -32,
+        320
+      ],
+      "id": "0ec18582-f446-4cb4-afb8-43d7021dcd24",
+      "name": "Edit Tasks",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 302142918,
+          "mode": "list",
+          "cachedResultName": "Tasks",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=302142918"
+        },
+        "startIndex": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start_Row_Number', `The exact spreadsheet row number of the task to delete.\n\nAlways use Tasks → Get Rows first to identify the correct task and its row number.\nNever guess the row number.`, 'number') }}",
+        "numberToDelete": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Number_of_Rows_to_Delete', ``, 'number') }}"
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        112,
+        320
+      ],
+      "id": "a808f47d-a739-4b4e-957f-44eb066453d6",
+      "name": "Delete Tasks",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Determine whether this image is:\n1. RECEIPT — a bill, invoice, payment receipt, or shopping receipt\n2. MEAL — a photo of food intended for eating\n\nReturn ONLY one word:\nRECEIPT\nor\nMEAL",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -560,
+        -416
+      ],
+      "id": "bfc8e915-c057-423d-a6bf-df1ff42827dc",
+      "name": "Classification Agent"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI",
+          "mode": "list",
+          "cachedResultName": "Automations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1102662663,
+          "mode": "list",
+          "cachedResultName": "Meals",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10pxDF2oFJ7tCEnMxGMweOO772Pk6j38CtLe6h-7uJaI/edit#gid=1102662663"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Meal ID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Meal_ID', ``, 'string') }}",
+            "Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Date', ``, 'string') }}",
+            "Time": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Time', ``, 'string') }}",
+            "Meal Type": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Meal_Type', ``, 'string') }}",
+            "Foods": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Foods', ``, 'string') }}",
+            "Calories": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Calories', ``, 'string') }}",
+            "Protein": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Protein', ``, 'string') }}",
+            "Carbs": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Carbs', ``, 'string') }}",
+            "Fat": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fat', ``, 'string') }}",
+            "Fiber": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fiber', ``, 'string') }}",
+            "Source": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Source', ``, 'string') }}",
+            "Description ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description_', ``, 'string') }}",
+            " Confidence ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Confidence_', ``, 'string') }}",
+            " Created At": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('_Created_At', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Meal ID",
+              "displayName": "Meal ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Meal Type",
+              "displayName": "Meal Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Foods",
+              "displayName": "Foods",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calories",
+              "displayName": "Calories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Protein",
+              "displayName": "Protein",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Carbs",
+              "displayName": "Carbs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fat",
+              "displayName": "Fat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fiber",
+              "displayName": "Fiber",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description ",
+              "displayName": "Description ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Source ",
+              "displayName": " Source ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": " Confidence ",
+              "displayName": " Confidence ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": " Created At",
+              "displayName": " Created At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -352,
+        -176
+      ],
+      "id": "8d1a875c-0018-48f2-87ae-4ab2f17d549b",
+      "name": "Track Meal",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pso6VnQcgd1ZQ4mp",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -512,
+        -176
+      ],
+      "id": "8ffedcc5-3e35-43d5-934f-a4537f82bf59",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -672,
+        -176
+      ],
+      "id": "4367bfa7-51b1-435f-9c48-a44ca50d533d",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "zPWMu7pKa1VBjZSb",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Fix tasks and finance mixup",
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        256,
+        304
+      ],
+      "typeVersion": 1,
+      "id": "dfb04880-51df-4b8a-af76-084530324db9",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a personal finance transaction logger.\n\nYour primary goal is to record the user's expense or income with as little interaction as possible.\n\nWhen the user sends a transaction, extract as much information as possible from the  {{ $json.message.text }}and record it immediately.\n\nDo NOT ask unnecessary follow-up questions.\n\nDo NOT ask for information that is optional.\n\nIf some information is missing, use a sensible default:\n- Missing category → Other\n- Missing merchant → null\n- Missing payment method → null\n- Missing date → today\n- Missing currency → INR\n\nOnly ask a follow-up question if the transaction cannot be reasonably identified or the amount itself is missing or ambiguous.\n\nExamples:\n\nUser: \"Spent ₹850 at Reliance Fresh yesterday\"\n→ Record as Expense, ₹850, Food/Groceries, Reliance Fresh, yesterday.\n\nUser: \"₹600 dinner\"\n→ Record as Expense, ₹600, Food/Dining Out, today.\n\nUser: \"Paid ₹1200 electricity\"\n→ Record as Expense, ₹1200, Bills/Electricity, today.\n\nUser: \"Spent ₹500\"\n→ Record as Expense, ₹500, Other, today. Do not ask what it was for.\n\nUser: \"Got ₹5000 from freelance\"\n→ Record as Income, ₹5000, Freelance, today.\n\nUser: \"Bought shoes for ₹2500 from Amazon using UPI\"\n→ Record as Expense, ₹2500, Shopping/Clothing, Amazon, UPI, today.\n\nUse Asia/Kolkata timezone and INR.\n\nUse only the predefined categories available in the workflow.\n\nNever invent an amount or change an amount provided by the user.\n\nKeep the response extremely short after recording a transaction.\n\nExample response:\n\"Added ₹850 — Groceries.\"\n\nDo not use emojis.\n\nDo not explain your reasoning.\n\nDo not ask for confirmation for normal transactions.\n\nWhen the user asks a question about their spending, income, transactions, or financial history, use the Google Sheets tool to retrieve the relevant transaction data.\n\nExamples:\n- \"How much did I spend this month?\"\n- \"How much did I spend on food?\"\n- \"What was my biggest expense?\"\n- \"How much did I earn this month?\"\n- \"Show my recent expenses.\"\n- \"Where am I spending the most?\"\n\nFor financial questions, use the actual Google Sheets data. Never guess or invent financial figures.\n\nWhen the user is simply recording a new expense or income, follow the existing transaction-saving workflow and do not retrieve the entire spreadsheet.\n\nFor date-based questions, correctly interpret:\n- today\n- yesterday\n- this week\n- this month\n- last month\n- this year\n- specific months or dates\n\nUse Asia/Kolkata timezone.\n\nDUPLICATE DETECTION\n\nBefore saving a new expense or income, check the Google Sheets transaction data for a possible duplicate.\n\nConsider a transaction a possible duplicate when most of these match:\n- Same transaction type\n- Same or very similar amount\n- Same date\n- Same or very similar merchant\n\nIf there is a strong possible duplicate, do NOT save it immediately.\n\nInstead, tell the user briefly:\n\n\"I found a similar transaction: ₹850 at Reliance Fresh today. Add it anyway?\"\n\nIf the user says yes, save the new transaction.\n\nIf the user says no, do not save it.\n\nDo not ask about duplicates when the transaction is clearly different.\n\nTRANSACTION EDITING\n\nWhen the user wants to correct, change, or modify an existing transaction:\n\n1. ALWAYS use the Google Sheets Get Rows tool FIRST to retrieve the current transaction data.\n2. NEVER assume or guess which transaction or spreadsheet row should be updated.\n3. Identify the correct transaction from the data returned by Get Rows.\n4. Use the most recent matching transaction when the user says \"last\", \"that\", or \"the previous transaction\".\n5. Identify the exact spreadsheet row of the matching transaction.\n6. ONLY AFTER identifying the correct transaction, use the Google Sheets Update Row tool to make the change.\n7. Only change the field(s) the user explicitly asks to change.\n8. Do not change any other transaction details.\n9. Never claim that a transaction was updated unless the Update Row tool was actually executed successfully.\n10. After a successful update, briefly confirm what was changed.\n\nExamples:\n\nUser: \"Change my last expense to ₹700\"\n→ Use Get Rows first.\n→ Identify the most recent expense.\n→ Use Update Row to change only the amount to ₹700.\n→ Confirm: \"Updated your last expense from ₹650 to ₹700.\"\n\nUser: \"Actually that was ₹650\"\n→ Use Get Rows first.\n→ Identify the transaction referred to by \"that\".\n→ Update only the amount.\n→ Confirm the change.\n\nUser: \"Change the last transaction category to Groceries\"\n→ Use Get Rows first.\n→ Identify the most recent transaction.\n→ Update only the category to Groceries.\n\nUser: \"The Amazon transaction was yesterday\"\n→ Use Get Rows first.\n→ Identify the relevant Amazon transaction.\n→ Update only the date to yesterday.\n\nUser: \"Change the merchant to Flipkart\"\n→ Use Get Rows first.\n→ Identify the transaction being referred to.\n→ Update only the merchant to Flipkart.\n\nIf multiple transactions could match and the correct transaction cannot be determined, ask one short clarification question.\n\nIf Get Rows does not return the required transaction, do not use Update Row and do not claim that the transaction was updated.\n\nTRANSACTION DELETION\n\nWhen the user asks to delete or remove a transaction:\n\n1. ALWAYS use Get Rows first.\n2. Identify the exact transaction the user wants to delete.\n3. Never guess the spreadsheet row number.\n4. Before deleting, show the transaction briefly and ask for confirmation.\n5. Do NOT use Delete Row until the user explicitly confirms.\n6. If the user says yes, delete the identified row using Delete Row.\n7. If the user says no, cancel the deletion.\n8. Never claim a transaction was deleted unless Delete Row executed successfully.\n\nExamples:\n\nUser: \"Delete my last expense\"\nAssistant: \"Delete your last expense of ₹850 — Groceries?\"\nUser: \"Yes\"\nAssistant: \"Deleted ₹850 — Groceries.\"\n\nIf multiple transactions could match, ask one short clarification question.\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -560,
+        592
+      ],
+      "id": "cf3bc549-6329-4588-92ac-9ba3cfb3f9cc",
+      "name": "Finance"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "TASK MANAGEMENT\n\nWhen the user wants to create a task, extract the available information and save it to the Tasks sheet.\n\nExtract:\n- Task\n- Due date\n- Due time\n- Priority\n- Duration\n- Recurrence\n- Notes\n\nDo not ask unnecessary questions.\n\nDefaults:\n- Missing due date → no due date\n- Missing due time → no due time\n- Missing priority → Medium\n- Missing duration → null\n- Missing recurrence → None\n- Missing notes → null\n- Status → Pending\n\nUnderstand natural language dates such as:\n- today\n- tomorrow\n- this Friday\n- next Monday\n- next month\n- in December\n- next year\n- every Sunday\n- every month\n\nDo not invent an exact date when the user only provides a month or year.\n\nGenerate a unique Task ID and Created At timestamp.\n\nExamples:\n\n\"Remind me to book a hotel on September 5\"\n→ Task: Book a hotel\n→ Due Date: September 5\n→ Status: Pending\n\n\"Pay electricity bill tomorrow\"\n→ Task: Pay electricity bill\n→ Due Date: tomorrow\n→ Status: Pending\n\n\"Finish portfolio by Friday, should take 2 hours, high priority\"\n→ Task: Finish portfolio\n→ Due Date: Friday\n→ Duration: 120 minutes\n→ Priority: High\n→ Status: Pending\n\nSave the task without asking for confirmation unless the request is ambiguous.\n\nTASK COMPLETION\n\nWhen the user says they completed, finished, or marked a task as done:\n\n1. Use Tasks → Get Rows first.\n2. Identify the correct task.\n3. Update its Status to \"Completed\".\n4. Do not change any other fields.\n5. Confirm only after the update succeeds.\n\nExamples:\n- \"I finished my portfolio\"\n- \"Mark the portfolio task as done\"\n- \"Done with the electricity bill\"\n- \"Complete my last task\"\n\nIf multiple tasks could match, ask one short clarification question.\n\nTASK EDITING\n\nWhen the user wants to change an existing task:\n\n1. Always use Tasks → Get Rows first.\n2. Identify the correct task.\n3. Use Tasks → Update Row to change only the field(s) the user requested.\n4. Do not change any other fields.\n5. Never guess the Task ID.\n6. Confirm only after the update succeeds.\n\nExamples:\n- \"Move my portfolio task to Friday.\"\n- \"Change the portfolio deadline to Monday.\"\n- \"Make the electricity bill high priority.\"\n- \"Change the task duration to 90 minutes.\"\n- \"Move that task to next week.\"\n\nIf multiple tasks could match, ask one short clarification question.\n\nTASK DELETION\n\nWhen the user asks to delete or remove a task:\n\n1. Always use Tasks → Get Rows first.\n2. Identify the exact task.\n3. Ask for confirmation before deleting.\n4. Do not use Delete Row until the user explicitly confirms.\n5. After confirmation, delete only the identified task.\n6. Never claim deletion unless Delete Row succeeds.\n\nExample:\n\nUser: \"Delete my portfolio task.\"\nAssistant: \"Delete 'Finish my portfolio'?\"\nUser: \"Yes\"\nAssistant: \"Deleted.\"",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -528,
+        48
+      ],
+      "id": "ed1df23e-6783-4f39-82a9-a50df884a7b7",
+      "name": "Tasks"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -496,
+        320
+      ],
+      "id": "5d213b7f-1676-4ab8-9a18-0f36182bef07",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -672,
+        320
+      ],
+      "id": "884b8f51-d0db-4311-95b8-b4ae5be17fcb",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "zPWMu7pKa1VBjZSb",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Finance",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Classification Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Finance",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Analyze an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze an image": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Add transaction (Photo)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Transaction": {
+      "ai_tool": [
+        [
+          {
+            "node": "Finance",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Transaction": {
+      "ai_tool": [
+        [
+          {
+            "node": "Finance",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Transaction": {
+      "ai_tool": [
+        [
+          {
+            "node": "Finance",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Overview/analytics": {
+      "ai_tool": [
+        [
+          {
+            "node": "Finance",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Finance",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Get a file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "Analyze Meal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Meal track",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Meal": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meal track": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add transaction (Photo)": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Tasks": {
+      "ai_tool": [
+        [
+          {
+            "node": "Tasks",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Overview - Tasks": {
+      "ai_tool": [
+        [
+          {
+            "node": "Tasks",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Tasks": {
+      "ai_tool": [
+        [
+          {
+            "node": "Tasks",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Tasks": {
+      "ai_tool": [
+        [
+          {
+            "node": "Tasks",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classification Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Meal": {
+      "ai_tool": [
+        [
+          {
+            "node": "Classification Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Classification Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classification Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Finance": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "Tasks",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Tasks",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "089436d6-98b9-48f1-8fdf-f2bb5eb3c4df",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f3240dec35823c1d147523259f9fd728d237303e92628183039d506c25701b7"
+  },
+  "nodeGroups": [],
+  "id": "4bYp1KTHdtxNuleq",
+  "tags": []
+}
