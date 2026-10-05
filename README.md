@@ -1,99 +1,138 @@
-# AI Personal Assistant Automation | n8n
+# AI Personal Assistant & Life Management Automation | n8n
 
 ## Overview
 
-An AI-powered personal assistant workflow built with **n8n** that integrates Telegram, AI models, Google services, and automated workflows to manage conversations, tasks, and financial transactions.
+An AI-powered personal assistant built with **n8n** that uses Telegram as the primary interface for managing tasks, meals, finances, and general requests.
 
-The system uses specialized AI agents for different functions and routes user requests to the appropriate workflow.
+The workflow uses AI agents to understand natural-language requests, route them to the appropriate workflow, process the data, and store structured information in Google Sheets.
 
-## Key Features
-
-- AI-powered conversational assistant through Telegram
-- Intelligent routing of user requests to specialized workflows
-- Task management through natural language
-- Financial transaction management and tracking
-- File and document analysis
-- AI-powered data analysis
-- JavaScript-based data processing and transformation
-- Automated email and Telegram notifications
-- Memory-enabled AI interactions
-- Google Sheets integration for structured data management
+Users can interact with the assistant through **text messages or photos**, making it possible to add meal records and finance/bill information directly from Telegram.
 
 ## Workflow Architecture
 
-### 1. Chat Assistant
+Project Preview
+The workflow architecture is shown below:
 
-The Chat Assistant handles general user requests and uses AI to understand and process messages.
+The workflow consists of specialized AI-powered agents for:
 
-**Workflow:**
-Telegram → Request Routing → AI Agent → Data Processing → Output
+- Chat and general assistance
+- Task management
+- Meal tracking
+- Finance and expense tracking
 
-The workflow includes:
-- OpenAI Chat Model
-- Simple Memory
-- Tool-based AI interactions
-- File retrieval and analysis
-- JavaScript data processing
-- Google Sheets integration
-- Telegram responses
+## Key Features
 
-### 2. Task Management
+### AI Personal Assistant
 
-The Task Agent handles task-related requests using natural language.
+- Accepts natural-language requests through Telegram
+- Uses AI agents to understand and route user requests
+- Provides responses directly through Telegram
+- Uses memory to maintain conversational context
 
-Users can interact with the assistant to manage tasks through Telegram.
+### Task Management
 
-**Workflow includes:**
-- AI-powered task understanding
-- Task creation
-- Task updates
-- Task deletion
-- Task-related data management
-- Telegram notifications
+Tasks can be created and managed using natural-language messages.
 
-### 3. Finance Management
+Examples:
+- Add a task
+- Update a task
+- Delete a task
+- Track pending tasks
 
-The Finance Agent handles financial transaction-related requests.
+Task data is stored and managed through **Google Sheets**.
 
-**Workflow includes:**
-- AI-powered financial request processing
-- Transaction-related data handling
-- Transaction recording
-- Transaction deletion
-- Financial data analysis
-- Telegram notifications
+### Meal Tracking
 
-## Technologies and Tools
+The assistant can track meals through Telegram.
 
-- n8n
-- AI Agents
-- OpenAI Chat Model
-- Google Gemini
-- Telegram Bot
-- Google Sheets
-- JavaScript
-- APIs
-- Workflow Automation
-- AI-powered Data Analysis
-- Natural Language Processing
+Users can:
+- Add meal information using text
+- Upload a meal photo through Telegram
+- Process the submitted information
+- Store meal records in Google Sheets
 
-## Workflow
+### Finance & Expense Tracking
+
+The Finance workflow allows users to manage expenses through Telegram.
+
+Users can:
+- Add expenses using text
+- Upload a photo of a bill or receipt
+- Process the submitted information
+- Store financial transaction data in Google Sheets
+
+### AI-Powered Data Processing
+
+The workflow uses AI to interpret user inputs and convert unstructured information into structured data.
+
+For example:
 
 ```text
-User Message
-     ↓
-Telegram
-     ↓
-Request Routing
-     ↓
-AI Agent
-     ↓
-┌──────────────┬──────────────┬──────────────┐
-│ Chat Assistant│ Task Agent   │ Finance Agent│
-└──────────────┴──────────────┴──────────────┘
-     ↓
-Data Processing / AI Analysis
-     ↓
-Google Sheets / Other Tools
-     ↓
-Telegram Response
+Telegram Message / Photo
+          ↓
+       AI Agent
+          ↓
+   Request Classification
+          ↓
+ ┌────────┬────────┬────────┐
+ │ Tasks  │  Meals │ Finance│
+ └────────┴────────┴────────┘
+          ↓
+    Data Processing
+          ↓
+     Google Sheets
+          ↓
+   Telegram Response
+
+**Technology Stack**
+- n8n – Workflow automation and orchestration
+- AI Agents – Natural-language understanding and task routing
+- OpenAI / AI Models – AI-powered processing
+- Google Gemini – AI model integration
+- Telegram Bot – User interface and communication
+- Google Sheets – Data storage and tracking
+- JavaScript – Data processing and transformation
+- APIs – External service integration
+
+**Workflow Components**
+Chat Assistant
+Handles general requests, conversation, file processing, AI analysis, and responses.
+Task Agent
+Manages task creation, updates, deletion, and tracking.
+Meal Tracker
+Processes meal information submitted through text or images and records it in Google Sheets.
+Finance Agent
+Processes financial transactions and bill/receipt images and records expense information in Google Sheets.
+
+**Use Cases**
+- Personal AI assistant
+- Task and productivity management
+- Meal and food tracking
+- Expense and finance tracking
+- Receipt and bill processing
+- AI-powered data extraction
+- Telegram-based automation
+- Personal workflow automation
+
+**Skills Demonstrated**
+- n8n workflow automation
+- AI agent workflows
+- Natural-language processing
+- AI-powered data extraction
+- Image-based data processing
+- Telegram bot integration
+- Google Sheets integration
+- JavaScript data processing
+- API integration
+- Workflow design and automation
+
+**Project Highlights**
+- Designed a multi-agent AI workflow using n8n.
+- Built specialized workflows for task, meal, and finance management.
+- Enabled both text and image-based data input through Telegram.
+- Automated the conversion of unstructured user inputs into structured data.
+- Integrated Google Sheets for centralized data storage and tracking.
+- Used AI and automation to reduce repetitive manual data-entry tasks.
+     Google Sheets
+          ↓
+   Telegram Response
